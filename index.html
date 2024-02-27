@@ -1,0 +1,198 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Игра в бункер</title>
+<style>
+    body {
+        margin: 0;
+        padding: 0;
+        font-family: Arial, sans-serif;
+        height: 100vh;
+        background: url(https://media.discordapp.net/attachments/765366078138089522/1190097711685447680/43567890-3JE789R75R86DFCLR7I89OL.png?ex=65ea63dd&is=65d7eedd&hm=91b16fada2cc529f920b509181c2941108d2c8d5745b7c77ba85c3c8c198a34c&=&format=webp&quality=lossless&width=1091&height=682);
+        background-size: cover;
+        background-repeat: no-repeat;
+    }
+
+    .container {
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: space-between;
+        margin-top: 20px;
+        margin-left: 20px;
+        margin-right: 20px;
+        color: rgb(0, 0, 0);
+    }
+
+    #windowsContainer {
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: center;
+        align-items: center;
+        margin-top: 20px; /* Добавляем отступ сверху для разделения контейнеров */
+    }
+
+
+    .window {
+        width: 375px;
+        height: 200px;
+        background-color: grey;
+        margin: 10px;
+        border-radius: 10px;
+        padding: 1px;
+        position: relative;
+    }
+
+    .details {
+        width: 30%;
+        font-size: 14px;
+        background-color: rgba(0, 0, 0, 0.1);
+        border-radius: 20px;
+        padding: 10px;
+    }
+
+    .details h2 {
+        margin-top: 0;
+    }
+
+    .details p {
+        margin: 5px 0;
+    }
+
+    .details p span {
+        font-weight: bold;
+    }
+
+    .details-item {
+        cursor: pointer;
+    }
+
+    .window-input {
+        width: 100%;
+        margin-bottom: 10px;
+    }
+
+    .window-button {
+        position: absolute;
+        bottom: 10px;
+        right: 10px;
+    }
+
+    .media-content {
+        width: 100%;
+        height: 100%;
+        object-fit: cover; 
+        border-radius: 10px;
+    }
+</style>
+</head>
+<body>
+    <div class="container">
+        <div class="details catastrophe-details">
+            <h2>Катастрофа</h2>
+            <div class="details-item catastrophe-type" id="catastropheType">123</div>
+        </div>
+        <div class="details bunker-details">
+            <h2>Бункер</h2>
+            <div class="details-item bunker-info">
+                <p>Продолжительность: <span class="details-item bunker-duration" id="bunkerDuration">10 месяцев</span></p>
+                <p>Площадь: <span class="details-item bunker-area" id="bunkerArea">100кв.м</span></p>
+            </div>
+        </div>
+        <div class="details bunker-contents">
+            <h2>Имеется в бункере</h2>
+            <p class="details-item bunker-contents" id="bunkerContents">Запасы еды, вода, медицинский инвентарь</p>
+        </div>
+    </div>
+
+    <div id="windowsContainer">
+        <!-- Здесь будут окна для игроков -->
+    </div>
+
+<script>
+    // Создание 10 окон для игроков
+    const numWindows = 10;
+    const windowsContainer = document.getElementById('windowsContainer');
+    for (let i = 0; i < numWindows; i++) {
+        const windowDiv = document.createElement('div');
+        windowDiv.className = 'window';
+        windowDiv.id = `window${i + 1}`;
+
+        // Добавление поля для вставки ссылки
+        const linkInput = document.createElement('input');
+        linkInput.className = 'window-input';
+        linkInput.placeholder = 'Вставьте ссылку';
+        windowDiv.appendChild(linkInput);
+
+        // Добавление поля для загрузки файла
+        const fileInput = document.createElement('input');
+        fileInput.className = 'window-input';
+        fileInput.type = 'file';
+        fileInput.accept = 'image/*,video/*';
+        windowDiv.appendChild(fileInput);
+
+        const button = document.createElement('button');
+        button.className = 'window-button';
+        button.textContent = 'Добавить';
+        button.addEventListener('click', function() {
+            const linkValue = linkInput.value;
+            const file = fileInput.files[0];
+
+            if (linkValue.trim() !== '') {
+                const mediaContent = document.createElement('img');
+                mediaContent.className = 'media-content';
+                mediaContent.src = linkValue;
+                windowDiv.innerHTML = '';
+                windowDiv.appendChild(mediaContent);
+            } else if (file) {
+                const reader = new FileReader();
+                reader.onload = function(event) {
+                    const mediaContent = document.createElement(file.type.startsWith('image') ? 'img' : 'video');
+                    mediaContent.className = 'media-content';
+                    mediaContent.src = event.target.result;
+                    windowDiv.innerHTML = '';
+                    windowDiv.appendChild(mediaContent);
+                };
+                reader.readAsDataURL(file);
+            }
+        });
+        windowDiv.appendChild(button);
+
+        windowsContainer.appendChild(windowDiv);
+    }
+
+    document.addEventListener("DOMContentLoaded", function() {
+        // Функция для изменения типа катастрофы
+        document.querySelector('.catastrophe-type').addEventListener('click', function() {
+            const newType = prompt('Введите новый тип катастрофы:');
+            if (newType !== null) {
+                document.getElementById('catastropheType').textContent = newType;
+            }
+        });
+
+        // Функция для изменения информации о бункере
+        document.querySelector('.bunker-duration').addEventListener('click', function() {
+            const newDuration = prompt('Введите новую продолжительность бункера:');
+            if (newDuration !== null) {
+                document.getElementById('bunkerDuration').textContent = newDuration;
+            }
+        });
+
+        document.querySelector('.bunker-area').addEventListener('click', function() {
+            const newArea = prompt('Введите новую площадь бункера:');
+            if (newArea !== null) {
+                document.getElementById('bunkerArea').textContent = newArea;
+            }
+        });
+
+        document.querySelector('.bunker-contents').addEventListener('click', function() {
+            const newContents = prompt('Введите новый список имеющихся в бункере предметов:');
+            if (newContents !== null) {
+                document.getElementById('bunkerContents').textContent = newContents;
+            }
+        });
+    });
+</script>
+</body>
+</html>
